@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>语法</title>
+<script>
+//Precident['name']
+let Precident={
+	name:"minus",
+	age:24,
+	setName:function(name){
+		this.name=name
+	}
+}
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+function Eco(){
+    this.house=function(){console.log(78)}
+    function abc(){console.log(45)}
+}
+let economy=new Eco()
+
+console.log(economy.house())//78
+//console.log(economy.abc())//报错
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+//call的用法
+let conduct={}
+function abduct(){
+	this.ventiduct="seduce"
+}
+
+abduct.call(conduct) //conduct.abduct()
+console.log(conduct.ventiduct)
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+//匿名函数
+;(function(){
+	let introduct="product"
+	function viaduct(){
+		console.log(introduct)
+	}
+	window.$=function(){
+		return {
+			reduce:viaduct
+		}
+	}
+})()
+
+$().reduce()
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+//任何函数都需要通过对象来调用，默认window
+//所有函数内部都有一个变量this
+//this指向调用函数的当前对象
+function Durable(endurance){
+	console.log(this)
+	this.endurance=endurance
+	this.getEndurance=function(){
+		console.log(this)
+		return this.endurance
+	}
+	this.setEndurance=function(endurance){
+		console.log(this)
+		this.endurance=endurance
+	}
+}
+
+Durable("endure")//this是window
+
+let dur=new Durable("duration")//this是dur
+
+dur.getEndurance()//this是dur
+
+let dynamic={} 
+dur.setEndurance.call(dynamic,"dynasty")//this是dynamic
+
+let dyn=dur.setEndurance
+dyn()//this是window
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+
+
+
+</script>
+</head>
+<body>
+	
+</body>
+</html>

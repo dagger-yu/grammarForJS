@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js闭包</title>
+<script type="text/javascript" src="./myModule.js"></script>
+<script type="text/javascript" src="./myModule2.js"></script>
+<script type="text/javascript">
+/**
+1.闭包（Closure）如何产生？
+	*当一个嵌套的内部（子）函数引用了嵌套的外部（父）函数的数据（变量/函数）时，只要父函数执行后，（函数变量提升）子函数的函数对象创建了，所用到父函数的数据便产生了闭包，此时子函数还未执行，但仍然可以在子函数对象Closure属性里查看到
+2.作用：
+	*使函数内部的变量在函数执行完后，仍然存活在内存中（延长了局部变量的生命周期）
+	*让函数外部可以操作（读写）到函数内部的数据（变量/函数）
+**/
+
+//1.将函数作为另一个函数的返回值
+function fn1(){
+	var a=2
+	var fn2=function(){
+		var b=1
+		a++
+		console.log(a)
+	}
+	return fn2
+}
+var f=fn1()//执行fn1，fn2还没执行
+f()//3
+f()//4
+
+//2.将函数作为实参传递给另一个函数调用
+function showDelay(msg,time){
+	setTimeout(function(){alert(msg)},time)
+}
+showDelay("hello!",200)
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+
+/**
+闭包的应用：定义js模块
+	*具有特定功能的js文件
+	*将所有的数据和功能都封装在一个函数内
+	*只向外暴露一个包含n个方法的对象或函数
+	*模块使用者只需要通过模块暴露的对象调用方法来实现对应的功能
+ */
+
+var module=myModule()
+module.doSomething()
+module.doOtherthing()
+
+myModule2.doSomething()
+myModule2.doOtherthing()
+
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+/**
+	闭包的缺点：
+		*函数执行完后，函数内的局部变量没有释放，占用内存时间会变长
+		*容易造成内存泄漏
+	解决：
+		*能不用闭包就不用
+		*及时释放
+ */
+
+f=null
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+/**
+	1.内存溢出
+		*一种程序运行出现的错误
+		*当程序运行需要的内存超过了剩余的内存时，就抛出内存溢出的错误
+	2.内存泄漏
+		*占用的内存没有及时释放
+		*内存泄漏积累多了就容易导致内存溢出
+		*常见的内存泄漏：
+			意外的全局变量，未用var、let声明的局部变量
+			没有及时清理的计时器或回调函数
+			闭包
+ */
+
+//没有及时清理的计时器或回调函数
+var intervalID=setInterval(function(){
+	console.log('setInterval')
+},1000)
+clearInterval(intervalID)
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+var name="the window"
+var object05={
+	name:'my object05',
+	getNameFn:function(){
+		console.log(this)
+		return function(){
+			return this.name
+		}
+	}
+}
+//无闭包
+//object05.getNameFn()指向一个函数fn，fn()再执行其实是，window.fn()
+console.log(object05.getNameFn()())//the window
+
+
+var name2="WINDOW"
+var object06={
+	name:'OBJECT06',
+	getNameFn:function(){
+		var that=this
+		return function(){
+			return that.name
+		}
+	}
+}
+//that的存在形成了闭包
+console.log(object06.getNameFn()())//OBJECT06
+
+
+function fun(n,o){
+	console.log(o)
+	return{
+		f:function(m){
+			return fun(m,n)
+		}
+	}
+}
+var a1=fun(0);//undefined，fun产生了闭包n，在a1对象的f属性指向的函数对象里查看到
+console.log('111111111111')
+a1.f(1);//0,a1.f(1)是一个新对象x了，产生了新闭包，但x没有保存在内存中，新产生的闭包消失
+a1.f(2);//0，这里依然使用的是a1对象，所以闭包数据没有更新
+a1.f(2).f(3);//2，这里a1.f(2)是新对象了，闭包里的n改变了，是2
+var b1=fun(0);b1.f(1);b1.f(2);b1.f(3);//undefined,0,0,0
+var c1=fun(0);c1.f(1);c1.f(2);c1.f(3);//undefined,0,0,0
+
+</script>
+</head>
+<body>
+	
+</body>
+</html>

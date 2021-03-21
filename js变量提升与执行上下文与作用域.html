@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js变量提升与执行上下文与作用域</title>
+<script type="text/javascript">
+/**
+ 1.变量声明提升，先于函数声明提升
+ 	*通过var定义（声明）的变量，在定义语句之前就可以访问到
+ 	*值：undefined
+ 2.函数声明提升
+ 	*函数声明执行了，函数对象已创建，可以查看某些属性了，但函数本体还尚未执行
+ 	*通过function声明的函数，在它之前就可以调用
+ 3.
+**/
+
+var a=3
+function fn(){console.log(a);var a=4}
+fn()
+//执行顺序
+//var a
+//function fn(){var a;console.log(a);a=4}
+//a=3
+
+console.log(b)//undefined
+fn2()//222
+//fn3()//报错,fn9 is not a function
+
+var b=3
+function fn2(){console.log('222')}
+var fn3=function(){console.log('333')}
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+/**
+	1.全局执行上下文
+		*在执行全局代码前将window确定为全局上下文
+		*对全局数据进行预处理
+			var定义的全局变量==》undefined，添加为window属性
+			function声明的全局函数==》赋地址值，添加为window的方法
+			this指向window
+	2.函数执行上下文
+		*在调用函数准备执行函数体前，创建对应函数的上下文对象
+		*对局部数据进行预处理
+			函数的形参变量进行赋实参的值，再添加为执行上下文的属性
+			函数的arguments进行赋值（实参列表），再添加为执行上下文的属性
+			函数里面声明的函数==》赋地址值，再添加为执行上下文的方法
+			this指向调用该函数的对象
+		*开始执行函数本体
+ */
+
+function fn4(a1){
+	console.log(a1)//2
+	console.log(a2)//undefined
+	a3()//ccc
+	console.log(this)//window
+	console.log(arguments)//伪数组[2.3,...]
+	var a2=3
+	function a3(){console.log("ccc")}
+}
+fn4(2,3)
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+/**
+	1.依次输出什么？
+		gb:undefined
+		fb:1
+		fb:2
+		fb:3
+		fe:3
+		fe:2
+		fe:1
+		ge:1
+	2.整个过程产生了多少个执行上下文？5,i=4时也有一个，但没有任何输出
+	 */
+	
+console.log('gb:'+i)
+var i=1
+foo(1)
+function foo(i){
+	if (i==4){return}
+	console.log('fb:'+i)
+	foo(i+1)
+	console.log('fe:'+i)
+}
+console.log('ge:'+i)
+
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+
+console.log(window)
+if (!(bb in window)){var bb=1}//此var也会变量提升
+console.log(bb)//undefined
+
+var cc=1
+function cc(cc){
+	console.log(cc)
+	var cc=2
+}
+//cc(3)//报错,cc is not a function
+
+//代码真正执行顺序
+//var cc
+//function cc(cc){console.log(cc)	var cc=2}
+//cc=1
+//cc(3)
+
+
+
+
+//------------------------------------------------------
+console.log("----------------------------------------------------------")
+
+
+
+/**
+	作用域是静态的（相对于上下文对象），在编写代码时就确定了
+	作用：隔离变量，避免冲突
+	分类：
+		全局作用域
+		函数作用域
+		没有块级作用域（ES6有了）
+ */
+
+/**
+作用域与上下文对象的区别：
+	*全局作用域外，每个函数都会创建自己的作用域，作用域在编写函数时就确定了，而不是函数调用时
+	*全局执行上下文对象是在全局作用域确定后，js自动创建的
+	*函数执行上下文是在调用函数时，函数体代码执行前，js创建的，函数调用结束后自动释放
+
+平常所说的作用域链就是通过上下文对象实现的，但作用域链的指向方向和顺序得参考编码时的情况
+ */
+
+var x=10
+function fn7(){console.log(x)}
+function show(f){
+	var x=20
+	f()
+}
+show(fn7)//10
+
+var fn8=function(){console.log(fn8)}
+fn8()//ƒ (){console.log(fn8)}
+var obj={
+	fn9:function(){
+		console.log(fn9)
+		// console.log(this.fn9)
+	}
+}
+// obj.fn9()//报错fn9 is not defined
+
+
+
+
+
+</script>
+</head>
+<body>
+	
+</body>
+</html>
